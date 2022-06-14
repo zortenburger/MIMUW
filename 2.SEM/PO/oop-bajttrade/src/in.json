@@ -1,0 +1,643 @@
+{
+    "info":
+    {
+        "dlugosc": 0,
+        "gielda": "socjalistyczna",
+        "kara_za_brak_ubran": 2137,
+        "ceny":
+        {
+            "programy": 42,
+            "jedzenie": 73,
+            "ubrania": 37,
+            "narzedzia": 420
+        }
+    },
+    "robotnicy": [
+        {
+            "id": 0,
+            "poziom": 1,
+            "kariera": "programista",
+            "kupowanie":
+            {
+                "typ": "technofob"
+            },
+            "produkcja":
+            {
+                "typ": "chciwy"
+            },
+            "uczenie":
+            {
+                "typ": "student",
+                "zapas": 2,
+                "okres": 5
+            },
+            "zmiana": "rewolucjonista",
+            "produktywnosc":
+            {
+                "programy": 100,
+                "jedzenie": 100,
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        },
+        {
+            "id": 1,
+            "poziom": 1,
+            "kariera": "programista",
+            "kupowanie":
+            {
+                "typ": "czyscioszek"
+            },
+            "produkcja":
+            {
+                "typ": "chciwy"
+            },
+            "uczenie":
+            {
+                "typ": "student",
+                "zapas": 2,
+                "okres": 5
+            },
+            "zmiana": "rewolucjonista",
+            "produktywnosc":
+            {
+                "programy": 100,
+                "jedzenie": 100,
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        },
+        {
+            "id": 2,
+            "poziom": 1,
+            "kariera": "programista",
+            "kupowanie":
+            {
+                "typ": "zmechanizowany",
+                "liczba_narzedzi": 5
+            },
+            "produkcja":
+            {
+                "typ": "chciwy"
+            },
+            "uczenie":
+            {
+                "typ": "student",
+                "zapas": 2,
+                "okres": 5
+            },
+            "zmiana": "rewolucjonista",
+            "produktywnosc":
+            {
+                "programy": 100,
+                "jedzenie": 100,
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        },
+        {
+            "id": 3,
+            "poziom": 1,
+            "kariera": "programista",
+            "kupowanie":
+            {
+                "typ": "gadzeciarz",
+                "liczba_narzedzi": 5
+            },
+            "produkcja":
+            {
+                "typ": "chciwy"
+            },
+            "uczenie":
+            {
+                "typ": "student",
+                "zapas": 2,
+                "okres": 5
+            },
+            "zmiana": "rewolucjonista",
+            "produktywnosc":
+            {
+                "programy": 100,
+                "jedzenie": 100,
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        },
+        {
+            "id": 4,
+            "poziom": 1,
+            "kariera": "programista",
+            "kupowanie":
+            {
+                "typ": "technofob"
+            },
+            "produkcja":
+            {
+                "typ": "krotkowzroczny"
+            },
+            "uczenie":
+            {
+                "typ": "student",
+                "zapas": 2,
+                "okres": 5
+            },
+            "zmiana": "rewolucjonista",
+            "produktywnosc":
+            {
+                "programy": 100,
+                "jedzenie": 100,
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        },
+        {
+            "id": 5,
+            "poziom": 1,
+            "kariera": "programista",
+            "kupowanie":
+            {
+                "typ": "technofob"
+            },
+            "produkcja":
+            {
+                "typ": "chciwy"
+            },
+            "uczenie":
+            {
+                "typ": "student",
+                "zapas": 2,
+                "okres": 5
+            },
+            "zmiana": "rewolucjonista",
+            "produktywnosc":
+            {
+                "programy": 100,
+                "jedzenie": 100,
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        },
+        {
+            "id": 6,
+            "poziom": 1,
+            "kariera": "programista",
+            "kupowanie":
+            {
+                "typ": "technofob"
+            },
+            "produkcja":
+            {
+                "typ": "sredniak",
+                "historia_sredniej_produkcji": 2
+            },
+            "uczenie":
+            {
+                "typ": "student",
+                "zapas": 2,
+                "okres": 5
+            },
+            "zmiana": "rewolucjonista",
+            "produktywnosc":
+            {
+                "programy": 100,
+                "jedzenie": 100,
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        },
+        {
+            "id": 7,
+            "poziom": 1,
+            "kariera": "programista",
+            "kupowanie":
+            {
+                "typ": "technofob"
+            },
+            "produkcja":
+            {
+                "typ": "perspektywiczny",
+                "historia_perspektywy": 3
+            },
+            "uczenie":
+            {
+                "typ": "student",
+                "zapas": 2,
+                "okres": 5
+            },
+            "zmiana": "rewolucjonista",
+            "produktywnosc":
+            {
+                "programy": 100,
+                "jedzenie": 100,
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        },
+        {
+            "id": 8,
+            "poziom": 1,
+            "kariera": "programista",
+            "kupowanie":
+            {
+                "typ": "technofob"
+            },
+            "produkcja":
+            {
+                "typ": "losowy"
+            },
+            "uczenie":
+            {
+                "typ": "student",
+                "zapas": 2,
+                "okres": 5
+            },
+            "zmiana": "rewolucjonista",
+            "produktywnosc":
+            {
+                "programy": 100,
+                "jedzenie": 100,
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        },
+        {
+            "id": 9,
+            "poziom": 1,
+            "kariera": "programista",
+            "kupowanie":
+            {
+                "typ": "technofob"
+            },
+            "produkcja":
+            {
+                "typ": "perspektywiczny",
+                "historia_perspektywy": 3
+            },
+            "uczenie":
+            {
+                "typ": "pracus"
+            },
+            "zmiana": "rewolucjonista",
+            "produktywnosc":
+            {
+                "programy": 100,
+                "jedzenie": 100,
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        },
+        {
+            "id": 10,
+            "poziom": 1,
+            "kariera": "programista",
+            "kupowanie":
+            {
+                "typ": "technofob"
+            },
+            "produkcja":
+            {
+                "typ": "perspektywiczny",
+                "historia_perspektywy": 3
+            },
+            "uczenie":
+            {
+                "typ": "oszczedny",
+                "limit_diamentow": 60
+            },
+            "zmiana": "rewolucjonista",
+            "produktywnosc":
+            {
+                "programy": 100,
+                "jedzenie": 100,
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        },
+        {
+            "id": 11,
+            "poziom": 1,
+            "kariera": "programista",
+            "kupowanie":
+            {
+                "typ": "technofob"
+            },
+            "produkcja":
+            {
+                "typ": "perspektywiczny",
+                "historia_perspektywy": 3
+            },
+            "uczenie":
+            {
+                "typ": "student",
+                "zapas": 2,
+                "okres": 5
+            },
+            "zmiana": "rewolucjonista",
+            "produktywnosc":
+            {
+                "programy": 100,
+                "jedzenie": 100,
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        },
+        {
+            "id": 12,
+            "poziom": 1,
+            "kariera": "programista",
+            "kupowanie":
+            {
+                "typ": "technofob"
+            },
+            "produkcja":
+            {
+                "typ": "perspektywiczny",
+                "historia_perspektywy": 3
+            },
+            "uczenie":
+            {
+                "typ": "okresowy",
+                "okresowosc_nauki": 10
+            },
+            "zmiana": "rewolucjonista",
+            "produktywnosc":
+            {
+                "programy": 100,
+                "jedzenie": 100,
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        },
+        {
+            "id": 13,
+            "poziom": 1,
+            "kariera": "programista",
+            "kupowanie":
+            {
+                "typ": "technofob"
+            },
+            "produkcja":
+            {
+                "typ": "perspektywiczny",
+                "historia_perspektywy": 3
+            },
+            "uczenie":
+            {
+                "typ": "rozkladowy"
+            },
+            "zmiana": "rewolucjonista",
+            "produktywnosc":
+            {
+                "programy": 100,
+                "jedzenie": 100,
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        },
+        {
+            "id": 14,
+            "poziom": 1,
+            "kariera": "programista",
+            "kupowanie":
+            {
+                "typ": "technofob"
+            },
+            "produkcja":
+            {
+                "typ": "perspektywiczny",
+                "historia_perspektywy": 3
+            },
+            "uczenie":
+            {
+                "typ": "student",
+                "zapas": 2,
+                "okres": 5
+            },
+            "zmiana": "konserwatysta",
+            "produktywnosc":
+            {
+                "programy": 100,
+                "jedzenie": 100,
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        },
+        {
+            "id": 15,
+            "poziom": 1,
+            "kariera": "programista",
+            "kupowanie":
+            {
+                "typ": "technofob"
+            },
+            "produkcja":
+            {
+                "typ": "perspektywiczny",
+                "historia_perspektywy": 3
+            },
+            "uczenie":
+            {
+                "typ": "student",
+                "zapas": 2,
+                "okres": 5
+            },
+            "zmiana": "rewolucjonista",
+            "produktywnosc":
+            {
+                "programy": 100,
+                "jedzenie": 100,
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        }
+    ],
+    "spekulanci": [
+        {
+            "id": 100,
+            "kariera": {
+                "typ": "sredni",
+                "historia_spekulanta_sredniego": 3
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        },
+        {
+            "id": 101,
+            "kariera": {
+                "typ": "wypukly"
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        },
+        {
+            "id": 102,
+            "kariera": {
+                "typ": "regulujacy_rynek"
+            },
+            "zasoby":
+            {
+                "diamenty": 100,
+                "ubrania": 100,
+                "narzedzia": 100,
+                "jedzenie": 100,
+                "programy": 100
+            }
+        }
+    ]
+}
