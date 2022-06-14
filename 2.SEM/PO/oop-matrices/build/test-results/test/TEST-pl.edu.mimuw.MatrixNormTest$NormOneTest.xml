@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pl.edu.mimuw.MatrixNormTest$NormOneTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2022-05-17T19:21:24" hostname="MacBook-Pro-Zuzanna.local" time="0.223">
+  <properties/>
+  <testcase name="testFullMatrices()" classname="pl.edu.mimuw.MatrixNormTest$NormOneTest" time="0.162"/>
+  <testcase name="testVector()" classname="pl.edu.mimuw.MatrixNormTest$NormOneTest" time="0.155"/>
+  <testcase name="testAntiDiagonal()" classname="pl.edu.mimuw.MatrixNormTest$NormOneTest" time="0.156"/>
+  <testcase name="testDiagonal()" classname="pl.edu.mimuw.MatrixNormTest$NormOneTest" time="0.029"/>
+  <testcase name="testSparseMatrices()" classname="pl.edu.mimuw.MatrixNormTest$NormOneTest" time="0.047"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
