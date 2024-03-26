@@ -1,0 +1,33 @@
+Rozwiazanie Zuzanna Ortenburger BSK zadanie 4 - Kryptografia
+nr indeksu: 438646
+
+Zadanie NCG
+
+FLAGA - flag{still-not-a-csprng}
+
+Analizując generator liczb pseudolosowych z zadania NCG, zauważyłam że możemy mając ostatnie 5 liczb wygenerowanych przez generator,
+obliczyc kolejno mozliwe a, nastepnie dla danych a obliczyc c i wygenerowac nastepna liczbe, w przypadku gdy wygenerowana liczba
+nie jest jedna, trzeba uruchomic generator od nowa. Prawdopodobienstwo ze wygenerowana liczba bedzie jedna jest wystarczajaco
+wysokie, zwlaszcza przy uzyciu generatora 2-3 razy.
+Wyznaczanie a:
+Zauwazamy ze s_i ^ s_j = (s_i-1 * a) ^ (s_j-1 * a) % m
+Zatem generujemy mozliwe a od tylu bit po bicie, zaczynajac od najmniej znaczacego bitu. Dla kazdej dlugosci sprawdzamy czy dany sufix a
+moze byc poprawny dla sufixów wyrazenia powyzej, jesli tak to dodajemy do listy mozliwych a dla danej dlugosci.
+
+Wyznaczanie c:
+Majac a, mozemy wyznaczyc c z wzoru:
+c = (s_i ^ (s_i-1 * a)) % m
+
+Zadanie Block cipher
+
+1.czesc wspolna (otrzymanie zaszyfrowanej flagi)
+Jako pierwszy krok dostajemy zaszyfrowane wiadomosci "Hello" oraz po odeslaniu "Hello" dostajemy widomosc "unknown command".
+xorujac wiadomosc "Hello" odpowiednio z "flag?" oraz "FLAG!" a nastepnie xorujac wynik z zaszyfronwana wiadomoscia "Hello",
+odsyłając do serwera dostajemy odpowiednie flagi zaszyfrowane kluczem i iv = "so_random_iv_wow".
+
+2.deszyfrorwanie flagi
+Majac zaszyfrowana flage, mozemy ja deszyfrowac korzystajac z ataku na CBC - oracle padding.
+Atak polega na tym, ze zmieniamy bajty paddingu i sprawdzamy czy deszyfrowana wiadomosc jest poprawna, jesli tak to znaczy ze
+ostatni bajt zaszyfrowanej wiadomosci jest poprawny. Nastepnie zmieniamy ostatni bajt paddingu i sprawdzamy czy deszyfrowana wiadomosc
+jest poprawna, jesli tak to znaczy ze przedostatni bajt zaszyfrowanej wiadomosci jest poprawny. Powtarzamy to az dojdziemy do pierwszego
+bajtu zaszyfrowanej wiadomosci. W ten sposob odszyfrowujemy cala wiadomosc.

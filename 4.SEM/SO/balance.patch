@@ -1,0 +1,362 @@
+diff -rupNEZbB oryginalne-zrodla/usr/include/minix/callnr.h moje-rozwiazanie/usr/include/minix/callnr.h
+--- oryginalne-zrodla/usr/include/minix/callnr.h	2014-09-14 11:00:44.000000000 +0200
++++ moje-rozwiazanie/usr/include/minix/callnr.h	2023-05-09 02:37:41.480862001 +0200
+@@ -58,8 +58,9 @@
+ #define PM_GETEPINFO		(PM_BASE + 45)
+ #define PM_GETPROCNR		(PM_BASE + 46)
+ #define PM_GETSYSINFO		(PM_BASE + 47)
++#define PM_TRANSFER_MONEY		(PM_BASE + 48)
+ 
+-#define NR_PM_CALLS		48	/* highest number from base plus one */
++#define NR_PM_CALLS		49	/* highest number from base plus one */
+ 
+ /*===========================================================================*
+  *				Calls to VFS				     *
+diff -rupNEZbB oryginalne-zrodla/usr/include/minix/config.h moje-rozwiazanie/usr/include/minix/config.h
+--- oryginalne-zrodla/usr/include/minix/config.h	2014-09-14 11:00:44.000000000 +0200
++++ moje-rozwiazanie/usr/include/minix/config.h	2023-05-09 02:38:25.880955342 +0200
+@@ -73,6 +73,11 @@
+ #define USER_DEFAULT_CPU	-1 /* use the default cpu or do not change the
+ 				      current one */
+ 
++/* The amount of money the process when starts */
++#define INIT_BALANCE 100
++/* Max. amount of money that can be assigned to a process */
++#define  MAX_BALANCE 1000
++
+ /*===========================================================================*
+  *	There are no user-settable parameters after this line		     *
+  *===========================================================================*/
+diff -rupNEZbB oryginalne-zrodla/usr/include/minix/ipc.h moje-rozwiazanie/usr/include/minix/ipc.h
+--- oryginalne-zrodla/usr/include/minix/ipc.h	2014-09-14 11:00:44.000000000 +0200
++++ moje-rozwiazanie/usr/include/minix/ipc.h	2023-05-14 18:58:23.802908140 +0200
+@@ -580,6 +580,14 @@ typedef struct {
+ _ASSERT_MSG_SIZE(mess_lc_pm_time);
+ 
+ typedef struct {
++	pid_t recipent;
++	int amount;
++
++	uint8_t padding[48];
++} mess_lc_pm_transfer;
++_ASSERT_MSG_SIZE(mess_lc_pm_transfer);
++
++typedef struct {
+ 	pid_t pid;
+ 	int options;
+ 
+@@ -1544,6 +1552,13 @@ typedef struct {
+ _ASSERT_MSG_SIZE(mess_pm_lc_time);
+ 
+ typedef struct {
++	int balance;
++
++	uint8_t padding[52];
++} mess_pm_lc_transfer;
++_ASSERT_MSG_SIZE(mess_pm_lc_transfer);
++
++typedef struct {
+ 	int status;
+ 
+ 	uint8_t padding[52];
+@@ -2093,6 +2108,7 @@ typedef struct {
+ 		mess_lc_pm_sprof	m_lc_pm_sprof;
+ 		mess_lc_pm_sysuname	m_lc_pm_sysuname;
+ 		mess_lc_pm_time		m_lc_pm_time;
++		mess_lc_pm_transfer	m_lc_pm_transfer;
+ 		mess_lc_pm_waitpid	m_lc_pm_waitpid;
+ 		mess_lc_readclock_rtcdev m_lc_readclock_rtcdev;
+ 		mess_lc_vfs_chown	m_lc_vfs_chown;
+@@ -2202,6 +2218,7 @@ typedef struct {
+ 		mess_pm_lc_ptrace	m_pm_lc_ptrace;
+ 		mess_pm_lc_sigset	m_pm_lc_sigset;
+ 		mess_pm_lc_time		m_pm_lc_time;
++		mess_pm_lc_transfer m_pm_lc_transfer;
+ 		mess_pm_lc_waitpid	m_pm_lc_waitpid;
+ 		mess_pm_lexec_exec_new	m_pm_lexec_exec_new;
+ 		mess_pm_lsys_getepinfo	m_pm_lsys_getepinfo;
+diff -rupNEZbB oryginalne-zrodla/usr/include/unistd.h moje-rozwiazanie/usr/include/unistd.h
+--- oryginalne-zrodla/usr/include/unistd.h	2014-09-14 11:00:42.000000000 +0200
++++ moje-rozwiazanie/usr/include/unistd.h	2023-05-09 02:32:23.956417849 +0200
+@@ -411,5 +411,6 @@ extern	 int optreset;		/* getopt(3) exte
+ extern	 char *suboptarg;	/* getsubopt(3) external variable */
+ #endif
+ 
++int transfermoney(pid_t, int);
+ __END_DECLS
+ #endif /* !_UNISTD_H_ */
+diff -rupNEZbB oryginalne-zrodla/usr/src/include/unistd.h moje-rozwiazanie/usr/src/include/unistd.h
+--- oryginalne-zrodla/usr/src/include/unistd.h	2014-09-13 23:56:50.000000000 +0200
++++ moje-rozwiazanie/usr/src/include/unistd.h	2023-05-09 01:36:54.308831195 +0200
+@@ -411,5 +411,6 @@ extern	 int optreset;		/* getopt(3) exte
+ extern	 char *suboptarg;	/* getsubopt(3) external variable */
+ #endif
+ 
++int transfermoney(pid_t, int);
+ __END_DECLS
+ #endif /* !_UNISTD_H_ */
+diff -rupNEZbB oryginalne-zrodla/usr/src/lib/libc/misc/Makefile.inc moje-rozwiazanie/usr/src/lib/libc/misc/Makefile.inc
+--- oryginalne-zrodla/usr/src/lib/libc/misc/Makefile.inc	2014-09-13 23:56:50.000000000 +0200
++++ moje-rozwiazanie/usr/src/lib/libc/misc/Makefile.inc	2023-05-09 04:54:39.331662087 +0200
+@@ -7,4 +7,4 @@
+ SRCS+=	initfini.c
+ 
+ # for -fstack-protector
+-SRCS+=	stack_protector.c
++SRCS+=	stack_protector.c transfermoney.c
+diff -rupNEZbB oryginalne-zrodla/usr/src/lib/libc/misc/transfermoney.c moje-rozwiazanie/usr/src/lib/libc/misc/transfermoney.c
+--- oryginalne-zrodla/usr/src/lib/libc/misc/transfermoney.c	1970-01-01 01:00:00.000000000 +0100
++++ moje-rozwiazanie/usr/src/lib/libc/misc/transfermoney.c	2023-05-14 19:08:46.013804559 +0200
+@@ -0,0 +1,17 @@
++#include <lib.h>
++#include <minix/rs.h>
++#include <string.h>
++
++int transfermoney(pid_t recipent, int amount)
++{
++        message m;
++	memset(&m, 0, sizeof(m));
++        m.m_lc_pm_transfer.recipent = recipent;
++        m.m_lc_pm_transfer.amount = amount;
++
++        if(_syscall(PM_PROC_NR, PM_TRANSFER_MONEY, &m) < 0){
++                return -1;
++        }
++
++        return(m.m_pm_lc_transfer.balance);
++}
+\ No newline at end of file
+diff -rupNEZbB oryginalne-zrodla/usr/src/minix/include/minix/callnr.h moje-rozwiazanie/usr/src/minix/include/minix/callnr.h
+--- oryginalne-zrodla/usr/src/minix/include/minix/callnr.h	2014-09-13 23:56:50.000000000 +0200
++++ moje-rozwiazanie/usr/src/minix/include/minix/callnr.h	2023-05-09 00:36:17.596779617 +0200
+@@ -58,8 +58,9 @@
+ #define PM_GETEPINFO		(PM_BASE + 45)
+ #define PM_GETPROCNR		(PM_BASE + 46)
+ #define PM_GETSYSINFO		(PM_BASE + 47)
++#define PM_TRANSFER_MONEY		(PM_BASE + 48)
+ 
+-#define NR_PM_CALLS		48	/* highest number from base plus one */
++#define NR_PM_CALLS		49	/* highest number from base plus one */
+ 
+ /*===========================================================================*
+  *				Calls to VFS				     *
+diff -rupNEZbB oryginalne-zrodla/usr/src/minix/include/minix/config.h moje-rozwiazanie/usr/src/minix/include/minix/config.h
+--- oryginalne-zrodla/usr/src/minix/include/minix/config.h	2023-05-09 00:22:18.772549340 +0200
++++ moje-rozwiazanie/usr/src/minix/include/minix/config.h	2023-05-09 00:29:19.620819494 +0200
+@@ -73,6 +73,11 @@
+ #define USER_DEFAULT_CPU	-1 /* use the default cpu or do not change the
+ 				      current one */
+ 
++/* The amount of money the process when starts */
++#define INIT_BALANCE 100
++/* Max. amount of money that can be assigned to a process */
++#define  MAX_BALANCE 1000
++
+ /*===========================================================================*
+  *	There are no user-settable parameters after this line		     *
+  *===========================================================================*/
+diff -rupNEZbB oryginalne-zrodla/usr/src/minix/include/minix/ipc.h moje-rozwiazanie/usr/src/minix/include/minix/ipc.h
+--- oryginalne-zrodla/usr/src/minix/include/minix/ipc.h	2023-05-09 03:54:09.173777324 +0200
++++ moje-rozwiazanie/usr/src/minix/include/minix/ipc.h	2023-05-14 18:56:43.267941180 +0200
+@@ -580,6 +580,14 @@ typedef struct {
+ _ASSERT_MSG_SIZE(mess_lc_pm_time);
+ 
+ typedef struct {
++	pid_t recipent;
++	int amount;
++
++	uint8_t padding[48];
++} mess_lc_pm_transfer;
++_ASSERT_MSG_SIZE(mess_lc_pm_transfer);
++
++typedef struct {
+ 	pid_t pid;
+ 	int options;
+ 
+@@ -1544,6 +1552,13 @@ typedef struct {
+ _ASSERT_MSG_SIZE(mess_pm_lc_time);
+ 
+ typedef struct {
++	int balance;
++
++	uint8_t padding[52];
++} mess_pm_lc_transfer;
++_ASSERT_MSG_SIZE(mess_pm_lc_transfer);
++
++typedef struct {
+ 	int status;
+ 
+ 	uint8_t padding[52];
+@@ -2093,6 +2108,7 @@ typedef struct {
+ 		mess_lc_pm_sprof	m_lc_pm_sprof;
+ 		mess_lc_pm_sysuname	m_lc_pm_sysuname;
+ 		mess_lc_pm_time		m_lc_pm_time;
++		mess_lc_pm_transfer	m_lc_pm_transfer;
+ 		mess_lc_pm_waitpid	m_lc_pm_waitpid;
+ 		mess_lc_readclock_rtcdev m_lc_readclock_rtcdev;
+ 		mess_lc_vfs_chown	m_lc_vfs_chown;
+@@ -2202,6 +2218,7 @@ typedef struct {
+ 		mess_pm_lc_ptrace	m_pm_lc_ptrace;
+ 		mess_pm_lc_sigset	m_pm_lc_sigset;
+ 		mess_pm_lc_time		m_pm_lc_time;
++		mess_pm_lc_transfer m_pm_lc_transfer;
+ 		mess_pm_lc_waitpid	m_pm_lc_waitpid;
+ 		mess_pm_lexec_exec_new	m_pm_lexec_exec_new;
+ 		mess_pm_lsys_getepinfo	m_pm_lsys_getepinfo;
+diff -rupNEZbB oryginalne-zrodla/usr/src/minix/servers/pm/forkexit.c moje-rozwiazanie/usr/src/minix/servers/pm/forkexit.c
+--- oryginalne-zrodla/usr/src/minix/servers/pm/forkexit.c	2014-09-13 23:56:50.000000000 +0200
++++ moje-rozwiazanie/usr/src/minix/servers/pm/forkexit.c	2023-05-14 18:50:40.593667915 +0200
+@@ -113,6 +113,8 @@ int do_fork()
+   new_pid = get_free_pid();
+   rmc->mp_pid = new_pid;	/* assign pid to child */
+ 
++  rmc->mp_account_balance = INIT_BALANCE; /* reset the account balance for the new process */
++
+   memset(&m, 0, sizeof(m));
+   m.m_type = VFS_PM_FORK;
+   m.VFS_PM_ENDPT = rmc->mp_endpoint;
+@@ -205,6 +207,8 @@ int do_srv_fork()
+   new_pid = get_free_pid();
+   rmc->mp_pid = new_pid;	/* assign pid to child */
+ 
++  rmc->mp_account_balance = INIT_BALANCE; /* reset the account balance for the new process */
++
+   memset(&m, 0, sizeof(m));
+   m.m_type = VFS_PM_SRV_FORK;
+   m.VFS_PM_ENDPT = rmc->mp_endpoint;
+diff -rupNEZbB oryginalne-zrodla/usr/src/minix/servers/pm/main.c moje-rozwiazanie/usr/src/minix/servers/pm/main.c
+--- oryginalne-zrodla/usr/src/minix/servers/pm/main.c	2014-09-13 23:56:50.000000000 +0200
++++ moje-rozwiazanie/usr/src/minix/servers/pm/main.c	2023-05-14 18:47:41.596758626 +0200
+@@ -215,6 +215,9 @@ static int sef_cb_init_fresh(int UNUSED(
+ 		/* Get kernel endpoint identifier. */
+ 		rmp->mp_endpoint = ip->endpoint;
+ 
++		/* Initialize account balance */
++		rmp->mp_account_balance = INIT_BALANCE;
++
+ 		/* Tell VFS about this system process. */
+ 		memset(&mess, 0, sizeof(mess));
+ 		mess.m_type = VFS_PM_INIT;
+diff -rupNEZbB oryginalne-zrodla/usr/src/minix/servers/pm/Makefile moje-rozwiazanie/usr/src/minix/servers/pm/Makefile
+--- oryginalne-zrodla/usr/src/minix/servers/pm/Makefile	2014-09-13 23:56:50.000000000 +0200
++++ moje-rozwiazanie/usr/src/minix/servers/pm/Makefile	2023-05-09 02:26:53.700622416 +0200
+@@ -4,7 +4,7 @@
+ PROG=	pm
+ SRCS=	main.c forkexit.c exec.c time.c alarm.c \
+ 	signal.c utility.c table.c trace.c getset.c misc.c \
+-	profile.c mcontext.c schedule.c
++	profile.c mcontext.c schedule.c transfermoney.c
+ 
+ DPADD+=	${LIBSYS} ${LIBTIMERS}
+ LDADD+=	-lsys -ltimers
+diff -rupNEZbB oryginalne-zrodla/usr/src/minix/servers/pm/mproc.h moje-rozwiazanie/usr/src/minix/servers/pm/mproc.h
+--- oryginalne-zrodla/usr/src/minix/servers/pm/mproc.h	2014-09-13 23:56:50.000000000 +0200
++++ moje-rozwiazanie/usr/src/minix/servers/pm/mproc.h	2023-05-09 21:38:50.951033744 +0200
+@@ -70,6 +70,8 @@ EXTERN struct mproc {
+   char mp_name[PROC_NAME_LEN];	/* process name */
+ 
+   int mp_magic;			/* sanity check, MP_MAGIC */
++
++  int mp_account_balance; /* account balance */
+ } mproc[NR_PROCS];
+ 
+ /* Flag values */
+diff -rupNEZbB oryginalne-zrodla/usr/src/minix/servers/pm/proto.h moje-rozwiazanie/usr/src/minix/servers/pm/proto.h
+--- oryginalne-zrodla/usr/src/minix/servers/pm/proto.h	2014-09-13 23:56:50.000000000 +0200
++++ moje-rozwiazanie/usr/src/minix/servers/pm/proto.h	2023-05-14 18:36:42.872901823 +0200
+@@ -89,3 +89,6 @@ struct mproc *find_proc(pid_t lpid);
+ int nice_to_priority(int nice, unsigned *new_q);
+ int pm_isokendpt(int ep, int *proc);
+ void tell_vfs(struct mproc *rmp, message *m_ptr);
++
++/* transfermoney.c */
++int do_transfermoney(void);
+\ No newline at end of file
+diff -rupNEZbB oryginalne-zrodla/usr/src/minix/servers/pm/table.c moje-rozwiazanie/usr/src/minix/servers/pm/table.c
+--- oryginalne-zrodla/usr/src/minix/servers/pm/table.c	2014-09-13 23:56:50.000000000 +0200
++++ moje-rozwiazanie/usr/src/minix/servers/pm/table.c	2023-05-14 18:45:34.543038420 +0200
+@@ -58,5 +58,6 @@ int (* const call_vec[NR_PM_CALLS])(void
+ 	CALL(PM_EXEC_RESTART)	= do_execrestart,
+ 	CALL(PM_GETEPINFO)	= do_getepinfo,		/* getepinfo(2) */
+ 	CALL(PM_GETPROCNR)	= do_getprocnr,		/* getprocnr(2) */
+-	CALL(PM_GETSYSINFO)	= do_getsysinfo		/* getsysinfo(2) */
++	CALL(PM_GETSYSINFO)	= do_getsysinfo,		/* getsysinfo(2) */
++	CALL(PM_TRANSFER_MONEY) = do_transfermoney  /* transfermoney(2) */
+ };
+diff -rupNEZbB oryginalne-zrodla/usr/src/minix/servers/pm/transfermoney.c moje-rozwiazanie/usr/src/minix/servers/pm/transfermoney.c
+--- oryginalne-zrodla/usr/src/minix/servers/pm/transfermoney.c	1970-01-01 01:00:00.000000000 +0100
++++ moje-rozwiazanie/usr/src/minix/servers/pm/transfermoney.c	2023-05-14 19:25:22.715013323 +0200
+@@ -0,0 +1,72 @@
++/* This file takes care of those system calls that deal with money transfer.
++ *
++ * The entry points into this file are
++ *   do_transfermoney:  perform money transfer from calling proces to recipent
++ */
++#include "pm.h"
++#include <stdio.h>
++#include <sys/types.h>
++#include "mproc.h"
++
++static int check_ancesor(struct mproc *anc_mp, struct mproc *rmp);
++
++/*===========================================================================*
++ *				do_transfermoney                             *
++ *===========================================================================*/
++int do_transfermoney(void)
++{
++	int arg_amount = m_in.m_lc_pm_transfer.amount;
++        register struct mproc *rmp = mp;
++        register struct mproc *rec_mp;         /* pointer to recipents mproc struct */
++
++        rec_mp = find_proc(m_in.m_lc_pm_transfer.recipent); 
++
++        /* Can't find process with given pid */
++        if(rec_mp == NULL){
++                return ESRCH;
++        } 
++
++        if(check_ancesor(rec_mp, rmp) || check_ancesor(rmp, rec_mp)){ 
++                /* Sender and recipent are related */
++                return EPERM;
++        } else if (arg_amount < 0){ 
++                /* Negative value request */
++                return EINVAL;
++        } else if(rmp->mp_account_balance < arg_amount){ 
++                /* Overdraft request */
++                return EINVAL;
++        } else if(rec_mp->mp_account_balance > MAX_BALANCE - arg_amount){ 
++                /* Recipent's account overflow */
++                return EINVAL;
++        }
++
++        /* Perform the actual transfer */
++        rmp->mp_account_balance -= arg_amount;
++        rec_mp->mp_account_balance += arg_amount;
++
++        /* Assign return value */
++        rmp->mp_reply.m_pm_lc_transfer.balance = rmp->mp_account_balance;
++
++        return OK;
++}
++
++/*===========================================================================*
++ *				check_ancesor                             *
++ *===========================================================================*/
++static int check_ancesor(anc_mp, rmp)
++struct mproc *anc_mp;       /* pointer to the ancesor's process */
++struct mproc *rmp;      /* pointer to the process to be checked */
++{
++/* Checks if process anc_mp is ancessor of the rmp process */
++        if(anc_mp == rmp){
++                return FALSE;
++        }
++
++        while(anc_mp != rmp && rmp != &mproc[rmp->mp_parent])
++                rmp = &mproc[rmp->mp_parent];
++
++        if (anc_mp == rmp)
++                return TRUE;
++        
++        return FALSE;
++}
+\ No newline at end of file
